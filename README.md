@@ -1,2 +1,1 @@
-# Travaflix
-Site para publicação de vídeos
+Este site foi feito para professores que querem compartilhar conteúdo com seus alunos

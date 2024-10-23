@@ -1,0 +1,23 @@
+// Text Colors
+$text-primary: #D4D3DF;
+$text-secondary: #999999;
+$text-on-primary: #ffffff;
+$text-muted: #aaaaaa;
+
+// Background Colors
+$background-primary: #141B41;
+$background-secondary: #f4f5f6;
+$background-light: $text-on-primary;
+$background-attention: #ff2e34;
+
+// Link Colors
+$link-default: $text-primary;
+$link-active: $background-primary;
+
+// Border Colors
+$border-default: #cccccc;
+
+// Pagination Colors
+$pagination-item-color: $text-secondary;
+$pagination-item-active-background: $background-attention;
+$pagination-item-active-color: $text-on-primary;

@@ -1,0 +1,21 @@
+@forward "variables";
+@use "variables" as *;
+
+html {
+  background: linear-gradient(
+      to bottom right,
+      #0A0A0A,
+      #141B41
+    ) no-repeat center center fixed !important;
+
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: $text-primary;
+  padding-bottom: 100px;
+
+  p {
+    color: $background-secondary;
+  }
+}
