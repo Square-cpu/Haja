@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from "vue-router";
 import UserView from "../views/UserView.vue";
 import CreatorView from "../views/CreatorView.vue";
 import LoginView from "../views/LoginView.vue";
+import ChannelsView from "@/views/ChannelsView.vue";
 
 const routes = [
   {

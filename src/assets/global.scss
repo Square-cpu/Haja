@@ -19,3 +19,53 @@ html {
     color: $background-secondary;
   }
 }
+
+input {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 15px;
+  height: 25px;
+  width: 300px;
+  border-radius: 4px;
+  border: 1px solid $border-default;
+  padding: 10px;
+  background-color: $background-light;
+  font-size: 1rem;
+}
+
+input::placeholder {
+  font-size: 1rem;
+  color: $text-primary;
+}
+
+textarea {
+  display: block;
+  width: 100%;
+  min-width: 300px;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 25px;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 1rem;
+  border: 1px solid $border-default;
+  background-color: $background-secondary;
+}
+
+textarea::placeholder {
+  font-size: 1rem;
+  color: $text-secondary;
+}
+
+button {
+  background: $background-primary;
+  color: $text-on-primary;
+  border: none;
+  padding: 10px;
+  width: 325px;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 4px;
+}
