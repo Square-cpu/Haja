@@ -1,51 +1,94 @@
 <template>
-  <div v-if="user == null && register == false">
-    <h1>Login</h1>
+  <div v-if="user == null && register == false" class="container">
+    <div class="card">
+      <h1>Login</h1>
+      <p>Welcome again!</p>
 
-    <form @submit.prevent="login" class="login-form">
-      <input type="text" placeholder="Username" v-model="username" />
-      <input type="password" placeholder="Password" v-model="password" />
+      <form @submit.prevent="login" class="login-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input
+            type="text"
+            id="username"
+            v-model="username"
+          />
+        </div>
 
-      <button type="submit" class="login-button">Enter</button>
-    </form>
-    <p>
-      Don't have an account yet?
-      <a @click="register = true" class="register-link">
-        <b> Register here! </b></a
-      >
-    </p>
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            id="password"
+            v-model="password"
+          />
+        </div>
+
+        <div class="form-footer">
+          <button type="submit">Enter</button>
+        </div>
+      </form>
+
+      <p class="signup">
+        Don't have an account yet?
+        <a @click="register = true" class="register-link">
+          <b> Register here! </b></a
+        >
+      </p>
+
+    </div>
   </div>
-  <div v-else-if="user == null && register == true">
-    <h1>Register</h1>
+  <div v-else-if="user == null && register == true" class="container">
+    <div class="card">
+      <h1>Register</h1>
 
-    <form @submit.prevent="registerUser">
-      <input type="text" placeholder="Username" v-model="username" />
-      <input type="text" placeholder="Email" v-model="email" />
-      <input type="date" placeholder="Birthdate" v-model="birthdate" />
-      <input type="password" placeholder="Password" v-model="password" />
-      <input
-        type="password"
-        placeholder="Confirm Password"
-        v-model="confirm_password"
-      />
+      <form @submit.prevent="registerUser" class="register-form">
+        <div class="form-group">
+          <label for="username">Username</label>
+          <input type="text" id="username" v-model="username" />
+        </div>
 
-      <button type="submit">Register</button>
-    </form>
-    <p>
-      Already have an account?
-      <a @click="register = false" class="register-link">
-        <b> Login here! </b></a
-      >
-    </p>
+        <div class="form-group">
+          <label for="email">Email</label>
+          <input type="text" id="email" v-model="email" />          
+        </div>
+
+        <div class="form-group">
+          <label for="birthdate">Birthdate</label>
+          <input type="date" id="birthdate" v-model="birthdate" />          
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <input type="password" id="password" v-model="password" />          
+        </div>
+
+        <div class="form-group">
+          <label for="confirm_password">Confirm password</label>
+          <input type="password" id="confirm_password" v-model="confirm_password" />          
+        </div>
+
+        <div class="form-footer">
+          <button type="submit">Register</button>
+        </div>
+        
+      </form>
+
+      <p class="signup">
+        Already have an account?
+        <a @click="register = false" class="register-link">
+          <b> Login here! </b></a
+        >
+      </p>
+    </div>
   </div>
-  <div v-else>
-    <h1>{{ user.username }} (ID {{ user.id }})</h1>
+  <div v-else class="user-info-container">
     <div class="user-info">
+      <h1 style="text-align: center; margin-bottom: 20px;">{{ user.username }} (ID {{ user.id }})</h1>
       <p><b>Username:</b> {{ user.username }}</p>
       <p><b>Email:</b> {{ user.email }}</p>
       <p><b>Created at:</b> {{ created_at_formatted }}</p>
       <p><b>Birthdate:</b> {{ birthdate_formatted }}</p>
-      <p><b>Role:</b> {{ user.role.name }}</p>
+      <p v-if="user.role.name === 'admin'"><b>Role:</b> {{ user.role.name }}</p>
 
       <button class="logout-button" @click="logout">Logout</button>
     </div>
@@ -155,20 +198,70 @@
 </script>
 
   
-<style lang="scss" scoped>  
+<style lang="scss" scoped>
+    @import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap');
+
+    h1 {
+      font-size: 1.8rem;
+      color: black;
+      margin-bottom: 10px;
+    }
+
+    p {
+      color: black;
+      margin: 5px 0 20px 0;
+    }
+
+    .user-info-container {
+      text-align: center;
+      padding: 20px;
+    }
+
     .user-info {
       text-align: left;
       max-width: 350px;
       margin-left: auto;
       margin-right: auto;
+
+      background-color: #D9D9D9;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
     }
-  
-    .logout-button {
-      background: $background-attention;
+
+    .form-group {
+      margin-bottom: 15px;
+      text-align: left;
+    }
+    
+    .form-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .signup {
+      margin-top: 20px;
+      font-size: 0.9rem;
+    }
+
+    .signup a {
+      color: blue;
+      text-decoration: none;
     }
 
     .register-link {
       cursor: pointer;
     }
+  
+    .logout-button {
+      background: $background-attention;
+      align-self: center;
+    }
+
+    .logout-button:hover {
+      background: #df282e;
+    }
+
 </style>
   

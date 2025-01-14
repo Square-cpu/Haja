@@ -1,5 +1,5 @@
 <template>
-    <div class="video-card">
+    <div class="card">
         <iframe
             width="320"
             height="240"
@@ -12,9 +12,8 @@
         <p class="author">
             <span><b>{{ author.username }}</b></span>
         </p>
-        <p class="text">{{ title }}</p>
-        <p class="text">{{ description }}</p>
-        <p class="time">{{ formattedDate }}</p>
+        <p class="title">{{ title }}</p>
+        <p class="description">{{ description }}</p>
     </div>
 </template>
 
@@ -59,7 +58,7 @@ const formattedDate = computed(() => {
 </script>
 
 <style lang="scss" scoped>
-.video-card {
+.card {
     border: 1px solid $border-default;
     width: 400px;
     border-radius: 8px;
@@ -74,7 +73,23 @@ const formattedDate = computed(() => {
     }
 }
 
+.title {
+    color: black;
+    margin: 5px 0 20px 0;
+    font-size: 20px;
+}
+
+.description {
+    color: rgb(20, 20, 20);
+    margin: 5px 0 20px 0;
+    font-size: 15px;
+}
+
 .time {
     color: $text-muted;
+}
+
+.author {
+    color: black;
 }
 </style>

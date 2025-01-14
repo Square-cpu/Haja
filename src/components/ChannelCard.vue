@@ -2,7 +2,7 @@
     <div class="channel-card">
         <p class = "text"> {{ channelName }}</p>
         <p class="author">
-            <span><b>{{ authorId }}</b></span>
+            <span><b>{{ channelId }}</b></span>
         </p>
         <p class="time">{{ formattedDate }}</p>
     </div>
@@ -17,6 +17,10 @@ const props = defineProps({
         required: true
     },
     authorId: {
+        type: String,
+        required: true
+    },
+    channelId: {
         type: String,
         required: true
     },
@@ -39,25 +43,33 @@ const formattedDate = computed(() => {
 <style lang="scss" scoped>
 .channel-card {
     border: 1px solid $border-default;
-    background-color: white;
-    width: 400px;
+    background-color: #ececec;
+    width: 90%;
     border-radius: 8px;
     margin-left: auto;
     margin-right: auto;
     margin-top: 24px;
     padding: 12px;
     text-align: center;
+    transition: all 0.2s ease-in-out;
 
     .text {
-        color: $text-primary;
+        color: $text-card;
     }
 
     .author {
         color: $text-muted;
     }
+
+    .time {
+        color: $text-muted;
+    }
 }
 
-.time {
-    color: $text-muted;
+.channel-card:hover {
+    background-color: $background-secondary;
+    cursor: pointer;
+    transform: scale(1.05);
 }
+
 </style>

@@ -1,64 +1,108 @@
 <template>
   <div v-if="!channel">
-    <h1>UserView</h1>
+    <div class="container">
+      <div class="card" style="width: 500px;">
 
-    <form @submit.prevent="search">
-      <input type="text" placeholder="Channel Name" v-model="name" />
-      <input type="password" placeholder="Password" v-model="password" />
-
-      <button type="submit">Enter</button>
-    </form>
-
-    <h1 style="margin-top: 100px;">Channels</h1>
-    <div v-if="user === null">
-      <h2>Please login first</h2>
-    </div>
-    <div v-else>
-      <nav>
-        <button @click="activeTab = 'own'">Your Channels</button>
-        <button @click="activeTab = 'subscribed'">Subscribed Channels</button>
-      </nav>
-      <div v-if="activeTab === 'own'">
-        <h2>Your Channels</h2>
-        <div v-if="user.created_channels.length > 0">
-          <ChannelCard
-            v-for="channel in user.created_channels"
-            :key="channel.id"
-            :channelName="channel.name"
-            :authorId="user.id"
-            :created="channel.created_at"
-          />
-        </div>
-      <div v-else>
-        <p>You have not created any channels yet.</p>
-      </div>        
-    </div>
-    <div v-else-if="activeTab === 'subscribed'">
-      <h2>Subscribed Channels</h2>
-      <div v-if="filteredSubscribedChannels.length > 0">
-        <ChannelCard
-          v-for="channel in filteredSubscribedChannels"
-          :key="channel.id"
-          :channelName="channel.name"
-          :authorId="channel.creator_id"
-          :created="channel.created_at"
-        />
+        <h1>Enter Channel</h1>
+      
+        <form @submit.prevent="search">
+          <input type="text" placeholder="Channel Name" v-model="name" />
+          <input type="password" placeholder="Password" v-model="password" />
+    
+          <button type="submit">Enter</button>
+        </form>
       </div>
-      <div v-else>
-        <p>You are not subscribed to any channels.</p>
+    </div>
+
+    <div class="container">
+      <div class="card" style="width: 500px;">
+        <h1>Channels</h1>
+        <div v-if="user === null">
+          <h2>Please login first</h2>
+        </div>
+        <div v-else>
+          <nav>
+            <button @click="activeTab = 'own'">Your Channels</button>
+            <button @click="activeTab = 'subscribed'">Subscribed Channels</button>
+          </nav>
+          <div v-if="activeTab === 'own'">
+            <h2>Your Channels</h2>
+            <div v-if="user.created_channels.length > 0">
+              <ChannelCard
+                v-for="channel in user.created_channels"
+                :key="channel.id"
+                :channelName="channel.name"
+                :authorId="user.id"
+                :channelId="channel.id"
+                :created="channel.created_at"
+                @click="fetchChannel(channel.id)"
+              />
+            </div>
+          <div v-else>
+            <p>You have not created any channels yet.</p>
+          </div>        
+        </div>
+        <div v-else-if="activeTab === 'subscribed'">
+          <h2>Subscribed Channels</h2>
+          <div v-if="filteredSubscribedChannels.length > 0">
+            <ChannelCard
+              v-for="channel in filteredSubscribedChannels"
+              :key="channel.id"
+              :channelName="channel.name"
+              :authorId="channel.creator_id"
+              :channelId="channel.id"
+              :created="channel.created_at"
+              @click="fetchChannel(channel.id)"
+            />
+          </div>
+          <div v-else>
+            <p>You are not subscribed to any channels.</p>
+          </div>
+        </div>
       </div>
     </div>
   </div>
   </div>
   <div v-else>
-    <h1>Channel</h1>
-    <div class="channel-info">
-      <p><b>ID:</b> {{ channel.id }}</p>
-      <p><b>Name:</b> {{ channel.name }}</p>
-      <p><b>Created at:</b> {{ created_at_formatted }}</p>
-      <p><b>Creator:</b> {{ channel.creator_id }}</p>
+    <div class="channel-wrapper">
+      <div class="channel-info">
+        <h1 style="text-align: center;">Channel</h1>
+        <p><b>ID:</b> {{ channel.id }}</p>
+        <p><b>Name:</b> {{ channel.name }}</p>
+        <p><b>Created at:</b> {{ created_at_formatted }}</p>
+        <p><b>Creator:</b> {{ channel.creator_id }}</p>
+      </div>
+
+      <div v-if="user.id === channel.creator_id" class="button-container">
+        <button class="delete-button" @click="showDeleteModal = true">Delete Channel</button>
+        <button class="edit-button" @click="manageVideos">Manage Videos</button>
+      </div>
     </div>
 
+    <!-- Delete Modal -->
+    <div v-if="showDeleteModal" class="modal-overlay" @click.self="showDeleteModal = false">
+      <div class="modal" @click.stop>
+        <h2>Delete Channel</h2>
+        <p>
+          Are you sure you want to <b>delete</b> this channel? 
+          You will lose all videos and subscribers. This action <b>cannot</b> be undone.
+        </p>
+        <button class="delete-button" @click="showConfirmModal = true; showDeleteModal = false">Yes, delete</button>
+        <button @click="showDeleteModal = false">Cancel</button>
+      </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div v-if="showConfirmModal" class="modal-overlay" @click.self="showConfirmModal = false; confirmText = ''">
+      <div class="modal" @click.stop>
+        <h2>Confirm Deletion</h2>
+        <p>Please type "DELETE CHANNEL" to confirm:</p>
+        <input type="text" v-model="confirmText" />
+        <button class="delete-button" @click="deleteChannel" :disabled="confirmText !== 'DELETE CHANNEL'">Delete Channel</button>
+        <button @click="showConfirmModal = false; confirmText = ''">Cancel</button>
+      </div>
+    </div>
+    
     <div style="display: grid; grid-template-columns: repeat(3, 1fr);">
         <VideoCard 
           v-for="video in videos"
@@ -72,7 +116,7 @@
         />
     </div>
     <div style="margin-top: 24px;">
-      <button class="logout-button" @click="quit">Quit</button>
+      <button class="quit-button" @click="quit">Return</button>
     </div>
   </div>
 </template>
@@ -85,23 +129,48 @@
   import { useToast } from "vue-toast-notification";
   import { DateTime } from "luxon";
 
-  const { post, get } = useAxios();
-
+  
+  const { post, get, del } = useAxios();
+  
   const $toast = useToast();
-
+  
   const name = ref("");
   const password = ref("");
   const channel = ref(null);
   const videos = ref([]);
-
+  
   const user = ref(null);
   const activeTab = ref("own");
+  
+  const showDeleteModal = ref(false);
+  const showConfirmModal = ref(false);
+  const confirmText = ref('');
+
+  const deleteChannel = () => {
+    del(`/channels/${channel.value.id}`)
+      .then((response) => {
+        $toast.success("Successfully deleted the channel!", { position: "bottom" });
+      })
+      .catch((error) => {
+        if (error.response) {
+          const status = error.response.status;
+          const message = error.response.data.message;
+          $toast.error(`Error ${status}: ${message}`, { position: "bottom" });
+        }
+      });
+
+    showConfirmModal.value = false;
+    showDeleteModal.value = false;
+    confirmText.value = '';
+
+    channel.value = null;
+  }
 
   const fetchChannel = (channelId) => {
     get(`/channels/${channelId}`).then((response) => {
       channel.value = response.data;
     });
-
+    
     get(`/channels/${channelId}/videos`).then((response) => {
       videos.value = response.data.map(video => ({        
         videoLink: video.url,
@@ -112,7 +181,6 @@
       }));
     });
   };
-
 
   const search = () => {
     post("/channels/search", {
@@ -155,7 +223,7 @@
   };
 
   const filteredSubscribedChannels = computed(() => {
-    return user.value?.subscribed_channels || [];
+    return user.value?.subscribed_channels.filter(channel => channel.creator_id !== user.value.id) || [];
   });
 
   onMounted(async () => {
@@ -170,34 +238,146 @@
   });
 </script>
 
-<style lang="scss" scoped>  
-  .channel-info {
-    text-align: left;
-    max-width: 350px;
-    margin-left: auto;
-    margin-right: auto;
-  }
+<style lang="scss" scoped>
+h1 {
+  font-size: 1.8rem;
+  color: black;
+  margin-bottom: 20px;
+}
 
-  .logout-button {
-    background: $background-attention;
-  }
+h2 {
+  font-size: 1.5rem;
+  color: #141B41;
+  margin-bottom: 10px;
+}
 
-  nav {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 1rem;
-  }
+p {
+  color: black;
+  margin: 5px 0 20px 0;
+}
 
-  button {
-    padding: 0.5rem 1rem;
-    border: none;
-    cursor: pointer;
-    background-color: #007bff;
-    color: white;
-    border-radius: 0.25rem;
+.channel-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Centers the channel-info and buttons */
+  justify-content: center;
+  text-align: center;
+  margin: 20px auto;
+  max-width: 800px; /* Limits the width of the entire content */
+}
 
-    &:hover {
-      background-color: #0056b3;
-    }
+.channel-info {
+  background-color: #D9D9D9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  width: 100%; /* Makes it responsive */
+  max-width: 600px; /* Limits its size on large screens */
+}
+  
+nav {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+button {
+  border: none;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  border-radius: 10px;
+  width: 50%;
+
+  &:hover {
+    background-color: #0056b3;
   }
+}
+
+.quit-button {
+  background: $background-attention;
+  padding: 0.5em;
+  width: 150px;
+  
+  font-size: 30px;
+  
+  &:hover {
+    background-color: #b90019;
+  }
+}
+
+.button-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px; /* Adds spacing between channel-info and buttons */
+  width: 100%;
+  max-width: 300px; /* Prevents buttons from becoming too wide */
+}
+
+.delete-button,
+.edit-button {
+  width: 100%;
+  max-width: 200px;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  text-align: center;
+}
+
+.delete-button {
+  background-color: #f30000;
+
+  &:hover {
+    background-color: #cc0000;
+  }
+}
+
+.edit-button {
+  background-color: #007bff;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+}
+
+@media (min-width: 768px) {
+  .button-container {
+    flex-direction: row;
+    justify-content: center;
+    gap: 20px; /* Adds more spacing for larger screens */
+  }
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal {
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+  width: 300px;
+
+  h2 {
+    margin-top: 0;
+  }
+}
+
+.modal button {
+  margin-top: 20px;
+  margin-right: 10px;
+}
 </style>

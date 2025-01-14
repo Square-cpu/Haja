@@ -1,21 +1,30 @@
 <template>
   <div>
-    <h1>Create Channel</h1>
-    <form @submit.prevent="createChannel">
-      <input type="text" placeholder="Name" v-model="name"/>
-      <input type="password" placeholder="Password" v-model="password"/>
-  
-      <button type="submit">Create</button>
-    </form>
-    <h1>Create Video</h1>
-    <form @submit.prevent="createVideo">
-      <input type="text" placeholder="Channel Id" v-model="channelId"/>
-      <input type="text" placeholder="Title" v-model="title"/>
-      <textarea rows="15" placeholder="Description" v-model="description"></textarea>
-      <input type="text" placeholder="URL" v-model="url"/>
+    <div class="container">
+      <div class="card">
+        <h1>Create Channel</h1>
+        <form @submit.prevent="createChannel">
+          <input type="text" placeholder="Name" v-model="name"/>
+          <input type="password" placeholder="Password" v-model="password"/>
+      
+          <button type="submit">Create</button>
+        </form>
+      </div>
+    </div>
 
-      <button type="submit">Create</button>
-    </form>
+    <div class="container">
+      <div class="card">
+        <h1>Create Video</h1>
+        <form @submit.prevent="createVideo">
+          <input type="text" placeholder="Channel Id" v-model="channelId"/>
+          <input type="text" placeholder="Title" v-model="title"/>
+          <textarea rows="15" placeholder="Description" v-model="description"></textarea>
+          <input type="text" placeholder="URL" v-model="url"/>
+    
+          <button type="submit">Create</button>
+        </form>
+      </div>
+    </div>
   </div>
 </template>
   
@@ -73,10 +82,17 @@
   const createChannel = () => {
     post("/channels/", { name: name.value, password: password.value }).then((response) => {
       console.log(response);
+
+      post("/channels/search", {
+        name: name.value,
+        password: password.value,
+      })
+      
       name.value = "";
       password.value = "";
       
       $toast.success("Channel created!", { position: "bottom" });
+
     })
     .catch((error) => {
       if (error.response) {
@@ -100,4 +116,10 @@
 </script>
 
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+  h1 {
+    font-size: 1.8rem;
+    color: black;
+    margin-bottom: 20px;
+  }
+</style>
