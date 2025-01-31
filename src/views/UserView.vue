@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <div class="container">
+    <div class="container" style="margin-top: 10px;">
       <div class="card" style="width: 500px;">
         <h1>Channels</h1>
         <div v-if="user === null">
@@ -32,7 +32,7 @@
                 v-for="channel in user.created_channels"
                 :key="channel.id"
                 :channelName="channel.name"
-                :authorId="user.id"
+                :authorUsername="channel.creator_username"
                 :channelId="channel.id"
                 :created="channel.created_at"
                 @click="fetchChannel(channel.id)"
@@ -49,7 +49,7 @@
               v-for="channel in filteredSubscribedChannels"
               :key="channel.id"
               :channelName="channel.name"
-              :authorId="channel.creator_id"
+              :authorUsername="channel.creator_username"
               :channelId="channel.id"
               :created="channel.created_at"
               @click="fetchChannel(channel.id)"
@@ -70,7 +70,7 @@
         <p><b>ID:</b> {{ channel.id }}</p>
         <p><b>Name:</b> {{ channel.name }}</p>
         <p><b>Created at:</b> {{ created_at_formatted }}</p>
-        <p><b>Creator:</b> {{ channel.creator_id }}</p>
+        <p><b>Creator:</b> {{ channel.creator_username }}</p>
       </div>
 
       <div v-if="user.id === channel.creator_id" class="button-container">

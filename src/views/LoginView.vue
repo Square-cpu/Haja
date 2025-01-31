@@ -6,7 +6,7 @@
 
       <form @submit.prevent="login" class="login-form">
         <div class="form-group">
-          <label for="username">Username</label>
+          <label for="username">Username or Email</label>
           <input
             type="text"
             id="username"
@@ -26,7 +26,7 @@
         <div class="form-footer">
           <button type="submit">Enter</button>
         </div>
-      </form>
+      </form>      
 
       <p class="signup">
         Don't have an account yet?
@@ -34,6 +34,58 @@
           <b> Register here! </b></a
         >
       </p>
+      
+      <p class="reset">
+        Forgot your password?
+        <a @click="resetPassword = true" class="reset-link">
+          <b> Reset it here </b></a
+        >
+      </p>
+
+      <p class="verify">
+        Created an account?
+        <a @click="verifyAccount = true" class="verify-link">
+          <b> Verify it here! </b></a
+        >
+      </p>
+
+      <!-- Reset password modal -->
+      <div v-if="resetPassword" class="modal-overlay" @click.self="resetPassword = false">
+        <div class="modal" @click.stop>
+          <h1>Reset password</h1>
+          <p>Enter your email to reset your password</p>
+
+          <form @submit.prevent="sendResetEmail" class="login-form">
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="text" id="email" v-model="email" />
+            </div>
+
+            <div class="form-footer">
+              <button type="submit">Reset</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Verify account modal -->
+      <div v-if="verifyAccount" class="modal-overlay" @click.self="verifyAccount = false">
+        <div class="modal" @click.stop>
+          <h1>Resend verification</h1>
+          <p>Enter your email to verify your account</p>
+
+          <form @submit.prevent="sendVerificationEmail" class="login-form">
+            <div class="form-group">
+              <label for="email">Email</label>
+              <input type="text" id="email" v-model="email" />
+            </div>
+
+            <div class="form-footer">
+              <button type="submit">Resend</button>
+            </div>
+          </form>
+        </div>
+      </div>
 
     </div>
   </div>
@@ -101,9 +153,11 @@
   import { DateTime } from "luxon";
   import { ref, onMounted, computed } from "vue";
   import { useToast } from "vue-toast-notification";
+  import { useRouter } from "vue-router";
 
   const { post, get, storeToken } = useAxios();
   const $toast = useToast();
+  const router = useRouter();
 
   const username = ref("");
   const password = ref("");
@@ -111,7 +165,10 @@
   const email = ref("");
   const birthdate = ref(null);
   const user = ref(null);
+
   const register = ref(false);
+  const resetPassword = ref(false);
+  const verifyAccount = ref(false);
 
   const fetchUser = () => {
     get("/users/me").then((response) => {
@@ -124,14 +181,15 @@
       username: username.value,
       password: password.value,
     })
-      .then((response) => {
-        storeToken(response.data.access_token);
-        fetchUser();
-        $toast.success("Login successful!", { position: "bottom" });
-      })
-      .catch(() => {
-        $toast.error("Invalid credentials!", { position: "bottom" });
-      });
+    .then((response) => {
+      storeToken(response.data.access_token);
+      fetchUser();
+      router.push("/account");
+      $toast.success("Login successful!", { position: "bottom" });
+    })
+    .catch(() => {
+      $toast.error("Invalid credentials!", { position: "bottom" });
+    });
   };
 
   const registerUser = () => {
@@ -182,6 +240,25 @@
     $toast.info("Logout successful!", { position: "bottom" });
   };
 
+  const sendResetEmail = () => {
+    post("/auth/request-password-reset", {
+      email: email.value,
+    }).then(() => {
+      $toast.success("Email sent successfully!", { position: "bottom" });
+      resetPassword.value = false;
+    }).catch(() => {
+      $toast.error("Error sending email!", { position: "bottom" });
+    });
+  };
+
+  const sendVerificationEmail = () => {
+    post("/users/resend-verification", {email: email.value}).then(() => {
+      $toast.success("Email sent successfully!", { position: "bottom" });
+    }).catch(() => {
+      $toast.error("Error sending email!", { position: "bottom" });
+    })
+  }
+
   const created_at_formatted = computed(() => {
     return DateTime.fromISO(user.value.created_at).toFormat("dd/MM/yyyy HH:mm");
   });
@@ -199,69 +276,100 @@
 
   
 <style lang="scss" scoped>
-    @import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap');
 
-    h1 {
-      font-size: 1.8rem;
-      color: black;
-      margin-bottom: 10px;
-    }
+  .container {
+    margin-top: 90px;
+  }
 
-    p {
-      color: black;
-      margin: 5px 0 20px 0;
-    }
+  h1 {
+    font-size: 1.8rem;
+    color: black;
+    margin-bottom: 10px;
+  }
 
-    .user-info-container {
-      text-align: center;
-      padding: 20px;
-    }
+  p {
+    color: black;
+    margin: 5px 0 20px 0;
+  }
 
-    .user-info {
-      text-align: left;
-      max-width: 350px;
-      margin-left: auto;
-      margin-right: auto;
+  .user-info-container {
+    text-align: center;
+    padding: 20px;
+  }
 
-      background-color: #D9D9D9;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-    }
+  .user-info {
+    text-align: left;
+    max-width: 350px;
+    margin-left: auto;
+    margin-right: auto;
 
-    .form-group {
-      margin-bottom: 15px;
-      text-align: left;
-    }
-    
-    .form-footer {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
+    background-color: #D9D9D9;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+  }
 
-    .signup {
-      margin-top: 20px;
-      font-size: 0.9rem;
-    }
+  .form-group {
+    margin-bottom: 15px;
+    text-align: left;
+  }
+  
+  .form-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
-    .signup a {
+  .signup, .reset, .verify {
+    margin-top: 20px;
+    font-size: 0.9rem;
+
+    a {
       color: blue;
       text-decoration: none;
     }
+  }
 
-    .register-link {
-      cursor: pointer;
-    }
-  
-    .logout-button {
-      background: $background-attention;
-      align-self: center;
+  .register-link, .reset-link, .verify-link {
+    cursor: pointer;
+  }
+
+  .logout-button {
+    background: $background-attention;
+    align-self: center;
+  }
+
+  .logout-button:hover {
+    background: #df282e;
+  }
+
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .modal {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    width: 300px;
+
+    h2 {
+      margin-top: 0;
     }
 
-    .logout-button:hover {
-      background: #df282e;
+    button {
+      margin-top: 10px;
     }
-
+  }
 </style>
   

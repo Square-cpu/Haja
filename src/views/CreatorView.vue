@@ -12,7 +12,7 @@
       </div>
     </div>
 
-    <div class="container">
+    <div class="container" style="margin-top: 10px;">
       <div class="card">
         <h1>Create Video</h1>
         <form @submit.prevent="createVideo">
