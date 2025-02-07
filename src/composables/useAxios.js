@@ -2,7 +2,7 @@ import axios from "axios";
 
 const axiosInstance = axios.create({
   baseURL: import.meta.env.PROD
-    ? "https://https://haja-backend-33xl9hx38-square-cpus-projects.vercel.app" // URL da API em produção
+    ? "https://haja-backend.vercel.app" // URL da API em produção
     : "http://localhost:5000", // URL da API em desenvolvimento
   timeout: 10000,
   headers: {
