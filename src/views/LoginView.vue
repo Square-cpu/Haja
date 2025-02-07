@@ -25,7 +25,7 @@
 
         <div class="field is-grouped is-grouped-centered">
           <p class="control">
-            <button type="submit" class="button is-rounded is-white">Login</button>
+            <button type="submit" class="button is-rounded is-white" ref="login_button">Login</button>
           </p>
         </div>
       </form>
@@ -69,7 +69,7 @@
 
             <div class="field is-grouped is-grouped-centered">
               <p class="control">
-                <button type="submit" class="button is-rounded is-white">Resend</button>
+                <button type="submit" ref="resend_button" class="button is-rounded is-white">Resend</button>
               </p>
             </div>
             
@@ -104,7 +104,7 @@
 
             <div class="field is-grouped is-grouped-centered">
               <p class="control">
-                <button type="submit" class="button is-rounded is-white">Reset</button>
+                <button type="submit" ref="reset_button" class="button is-rounded is-white">Reset</button>
               </p>
             </div>
 
@@ -164,7 +164,7 @@
 
         <div class="field is-grouped is-grouped-centered">
           <p class="control">
-            <button type="submit" class="button is-rounded is-white">Register</button>
+            <button type="submit" ref="register_button"class="button is-rounded is-white">Register</button>
           </p>
         </div>
         
@@ -204,6 +204,11 @@
   const verifyAccount = ref(false);
   const resetPassword = ref(false);
 
+  const login_button = ref(null);
+  const register_button = ref(null);
+  const resend_button = ref(null);
+  const reset_button = ref(null);
+
   const fetchUser = () => {
     get("/users/me").then((response) => {
       user.value = response.data;
@@ -212,6 +217,8 @@
   };
 
   const login = () => {
+    login_button.value.classList.add('is-loading');
+
     post("/auth/login", {
       username: username.value,
       password: password.value,
@@ -228,6 +235,9 @@
       } else {
         $toast.error("An unexpected error occurred.", { position: "bottom" });
       }
+    })
+    .finally(() => {
+      login_button.value.classList.remove('is-loading');
     });
   };
 
@@ -241,6 +251,9 @@
       $toast.error("Missing information!", { position: "bottom" });
       return;
     }
+
+    //animação botão
+    register_button.value.classList.add('is-loading');
 
     // Handle timezone
     let birthdateUTC = new Date(birthdate.value);
@@ -271,6 +284,9 @@
     })
     .catch(() => {
       $toast.error("Error during user creation!", { position: "bottom" });
+    })
+    .finally(() => {
+      register_button.value.classList.remove('is-loading');
     });
   };
 
@@ -281,6 +297,11 @@
   };
 
   const sendResetEmail = () => {
+    reset_button.value.classList.add('is-loading');
+
+    //se o email tiver vazio
+ 
+
     console.log(email.value);
     post("/auth/request-password-reset", {
       email: email.value,
@@ -289,16 +310,25 @@
       resetPassword.value = false;
     }).catch(() => {
       $toast.error("Error sending email!", { position: "bottom" });
+    })
+    .finally(() => {
+      reset_button.value.classList.remove('is-loading');
     });
   };
 
   const sendVerificationEmail = () => {
+    resend_button.value.classList.add('is-loading');
+
     post("/users/resend-verification", {email: email.value}).then(() => {
       $toast.success("Email sent successfully!", { position: "bottom" });
       verifyAccount.value = false;
-    }).catch(() => {
+    })
+    .catch(() => {
       $toast.error("Error sending email!", { position: "bottom" });
     })
+    .finally(() => {
+      resend_button.value.classList.remove('is-loading');
+    });
   }
 
   const created_at_formatted = computed(() => {
@@ -314,6 +344,7 @@
       router.push("/account");
     }
   });
+
 </script>
 
   
