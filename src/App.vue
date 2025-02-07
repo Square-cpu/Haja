@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <nav v-if="showNavbar || isLoggedIn()" id="navbar">
+    <nav v-if="showNavbar || (route.name == 'login' && isLoggedIn())" id="navbar">
       <div id="logo">
         <router-link to="/">HAJA</router-link>
       </div>
@@ -30,7 +30,7 @@ import { useRoute } from "vue-router";
 const route = useRoute();
 
 const showNavbar = computed(() => {
-  return route.name !== 'login';
+  return route.meta.showNavbar !== false;
 });
 
 function isLoggedIn() {
@@ -38,14 +38,14 @@ function isLoggedIn() {
 }
 </script>
 
-<style lang="scss">
+<style scoped lang="scss">
 #navbar {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 80px;
-  background-color: $background-primary;
+  background-color: #17171b;
   color: $text-on-primary;
   display: flex;
   justify-content: space-between;
@@ -67,22 +67,27 @@ function isLoggedIn() {
     font-size: 2rem;
     font-weight: bold;
 
-    flex: 1;
+    flex: 0 1 auto;
+    padding-left: 50px;
   }
 
   #middle-content {
-    flex: 1; /* Take up available space */
+    flex: 1;
     display: flex;
-    justify-content: center; /* Center the content */
+    justify-content: center;
     align-items: center;
+    text-align: center;
+
+    margin: 0;
   }
 
   #nav-icons {
+    flex: 0 1 auto;
     display: flex;
     gap: 20px;
+    align-items: center;
+    padding-right: 50px;
     justify-content: center;
-
-    flex: 1;
 
     .material-icons {
       font-size: 1.8rem;
@@ -97,6 +102,6 @@ function isLoggedIn() {
 }
 
 .view {
-  margin-top: 120px; /* To account for the fixed navbar */
+  margin-top: 100px;
 }
 </style>

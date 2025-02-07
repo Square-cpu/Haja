@@ -1,15 +1,23 @@
 <template>
-  <div class="reset-password-container">
-    <h1 style="color: black">Reset Password</h1>
-    <p style="color: black">Please enter the new password.</p>
+  <div class="box session">
+    <h1 class="title is-1" style="color: #e8e8e8; text-align: center;">Reset Password</h1>
+    <p class="subtitle is-4" style="color: #d4d4d4; text-align: center;">Please enter the new password.</p>
 
     <form @submit.prevent="sendResetEmail">
-      <div class="form-group">
-        <label for="password">Password</label>
-        <input type="password" id="password" v-model="password" required>
+      <div class="field">
+        <div class="control has-icons-left">
+            <input type="password" id="password" v-model="password" class="input" placeholder="Password" required />
+            <span class="icon is-left is-small">
+              <i class="material-icons">lock_open</i>
+            </span>
+          </div>
       </div>
 
-      <button type="submit">Reset Password</button>
+      <div class="field is-grouped is-grouped-centered">
+        <p class="control">
+          <button type="submit" class="button is-rounded is-white">Reset Password</button>
+        </p>
+      </div>
     </form>
   </div>
 </template>
@@ -46,43 +54,23 @@ const sendResetEmail = () => {
 
 </script>
 
-<style scoped>
-.reset-password-container {
-  max-width: 400px;
-  margin: auto;
-  margin-top: 120px;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #f9f9f9;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-label {
-  display: block;
-  margin-bottom: 5px;
-}
-
-input {
-  width: 100%;
-  padding: 8px;
-  box-sizing: border-box;
+<style scoped lang="scss">
+.session {
+  width: auto;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  margin: auto auto;
+  margin-top: 200px;
 }
 
 button {
   padding: 10px 15px;
-  background-color: #007bff;
-  color: white;
   border: none;
-  border-radius: 5px;
-  cursor: pointer;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #a3a3a3;
 }
 
 p {

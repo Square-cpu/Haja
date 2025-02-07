@@ -13,19 +13,20 @@ const routes = [
   {
     path: '/login',
     name: 'login',
-    component: LoginView
+    component: LoginView,
+    meta: { showNavbar: false }
   },
   {
     path: '/',
     name: 'home',
     component: UserView,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true, isVerified: true }
   },
   {
     path: '/creator',
     name: 'creator',
     component: CreatorView,
-    meta: { requiresAuth: true }
+    meta: { requiresAuth: true, isVerified: true }
   },
   {
     path: '/about',
@@ -41,12 +42,14 @@ const routes = [
   {
     path: '/reset-password',
     name: 'reset-password',
-    component: ResetPasswordView
+    component: ResetPasswordView,
+    meta: { showNavbar: false }
   },
   {
     path: '/verified-account',
     name: 'verified-account',
-    component: VerifiedAccountView
+    component: VerifiedAccountView,
+    meta: { showNavbar: false }
   },
 
 ]
@@ -62,10 +65,18 @@ function isLoggedIn() {
   return localStorage.getItem('authToken') !== null;
 }
 
+function isVerified() {
+  const user = JSON.parse(localStorage.getItem('user'));
+  return user && user.is_verified;
+}
+
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth && !isLoggedIn()) {
     next({ name: 'login' })
     $toast.warning('You must be logged in to access this page.', { position: "bottom" });
+  } else if (to.meta.isVerified && !isVerified()) {
+    next({ name: 'account' });
+    $toast.warning('You must verify your account to access this page.', { position: "bottom" });
   } else {
     next()
   }

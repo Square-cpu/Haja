@@ -1,32 +1,69 @@
 <template>
-  <div v-if="!channel">
+  <div v-if="!channel" class="section">
     <div class="container">
-      <div class="card" style="width: 500px;">
+      <div class="box session" style="width: 500px;">
 
-        <h1>Enter Channel</h1>
+        <h1 class="title is-1" style="text-align: center;">Enter Channel</h1>
       
-        <form @submit.prevent="search">
-          <input type="text" placeholder="Channel Name" v-model="name" />
-          <input type="password" placeholder="Password" v-model="password" />
-    
-          <button type="submit">Enter</button>
+        <form @submit.prevent="search" class="field is-centered">
+
+          <div class="field">
+            <div class="control has-icons-left">
+              <input type="text" id="name" v-model="name" class="input" placeholder="Channel Name"/>
+              <span class="icon is-left is-small">
+                <i class="material-icons">search</i>
+              </span>
+            </div>
+
+            <div class="control has-icons-left">
+              <input type="password" id="password" v-model="password" class="input" placeholder="Password"/>
+              <span class="icon is-left is-small">
+                <i class="material-icons">lock</i>
+              </span>
+            </div>
+          </div>
+
+          <div class="field is-grouped is-grouped-centered">
+            <p class="control">
+              <button type="submit" class="button is-rounded is-white">Enter</button>
+            </p>
+          </div>
+
         </form>
       </div>
     </div>
 
-    <div class="container" style="margin-top: 10px;">
-      <div class="card" style="width: 500px;">
-        <h1>Channels</h1>
+    <div class="container" style="margin-top: 20px;">
+      <div class="box session" style="width: 500px;">
+
+        <h1 class="title is-1" style="text-align: center;">Channels</h1>
+
         <div v-if="user === null">
-          <h2>Please login first</h2>
+          <h2 class="title is-3">Please login first</h2>
         </div>
         <div v-else>
-          <nav>
-            <button @click="activeTab = 'own'">Your Channels</button>
-            <button @click="activeTab = 'subscribed'">Subscribed Channels</button>
+
+          <nav class="navbar">
+            <div class="navbar-menu">
+              <div class="navbar-start">
+                <div class="field is-grouped is-grouped-centered">
+                  <p class="control">
+                    <button @click="activeTab = 'own'" :style="{ backgroundColor: activeTab === 'own' ? '#f2f2f2' : 'gray' }" style="width: 220px;" class="button is-rounded is-white">Your Channels</button>
+                  </p>
+                </div>
+              </div>
+              <div class="navbar-end">
+                <div class="field is-grouped is-grouped-centered">
+                  <p class="control">
+                    <button @click="activeTab = 'subscribed'" :style="{ backgroundColor: activeTab === 'subscribed' ? '#f2f2f2' : 'gray' }" style="width: 220px;" class="button is-rounded is-white">Subscribed Channels</button>
+                  </p>
+                </div>
+              </div>
+            </div>
           </nav>
+
           <div v-if="activeTab === 'own'">
-            <h2>Your Channels</h2>
+            <h2 class="title is-4" style="text-align: center;">Your Channels</h2>
             <div v-if="user.created_channels.length > 0">
               <ChannelCard
                 v-for="channel in user.created_channels"
@@ -38,12 +75,12 @@
                 @click="fetchChannel(channel.id)"
               />
             </div>
-          <div v-else>
-            <p>You have not created any channels yet.</p>
-          </div>        
+            <div v-else>
+              <p class="subtitle is-6" style="text-align: center;">You have not created any channels yet.</p>
+            </div>        
         </div>
         <div v-else-if="activeTab === 'subscribed'">
-          <h2>Subscribed Channels</h2>
+          <h2 class="title is-4" style="text-align: center;">Subscribed Channels</h2>
           <div v-if="filteredSubscribedChannels.length > 0">
             <ChannelCard
               v-for="channel in filteredSubscribedChannels"
@@ -56,21 +93,21 @@
             />
           </div>
           <div v-else>
-            <p>You are not subscribed to any channels.</p>
+            <p class="subtitle is-6" style="text-align: center;">You are not subscribed to any channels.</p>
           </div>
         </div>
       </div>
     </div>
   </div>
   </div>
-  <div v-else>
-    <div class="channel-wrapper">
-      <div class="channel-info">
-        <h1 style="text-align: center;">Channel</h1>
-        <p><b>ID:</b> {{ channel.id }}</p>
-        <p><b>Name:</b> {{ channel.name }}</p>
-        <p><b>Created at:</b> {{ created_at_formatted }}</p>
-        <p><b>Creator:</b> {{ channel.creator_username }}</p>
+  <div v-else class="section">
+    <div class="container">
+      <div class="box session channel-card">
+        <h1 class="title is-1" style="text-align: center;">Channel</h1>
+        <p style="font-size: 20px;"><b>ID:</b> {{ channel.id }}</p>
+        <p style="font-size: 20px;"><b>Name:</b> {{ channel.name }}</p>
+        <p style="font-size: 20px;"><b>Created at:</b> {{ created_at_formatted }}</p>
+        <p style="font-size: 20px;"><b>Creator:</b> {{ channel.creator_username }}</p>
       </div>
 
       <div v-if="user.id === channel.creator_id" class="button-container">
@@ -116,7 +153,7 @@
         />
     </div>
     <div style="margin-top: 24px;">
-      <button class="quit-button" @click="quit">Return</button>
+      <button class="button is-danger" @click="quit">Return</button>
     </div>
   </div>
 </template>
@@ -239,145 +276,172 @@
 </script>
 
 <style lang="scss" scoped>
-h1 {
-  font-size: 1.8rem;
-  color: black;
-  margin-bottom: 20px;
-}
-
-h2 {
-  font-size: 1.5rem;
-  color: #141B41;
-  margin-bottom: 10px;
-}
-
-p {
-  color: black;
-  margin: 5px 0 20px 0;
-}
-
-.channel-wrapper {
+.session {
+  width: auto;
+  max-width: 500px;
   display: flex;
   flex-direction: column;
-  align-items: center; /* Centers the channel-info and buttons */
-  justify-content: center;
-  text-align: center;
-  margin: 20px auto;
-  max-width: 800px; /* Limits the width of the entire content */
+  margin: auto auto;
+
+  .input {
+    margin-bottom: 10px;
+    border: none;
+    border-bottom: 1px solid #fdfdfd97;
+    --bulma-input-radius: 0rem;
+  }
+
+  input:focus {
+    --bulma-input-focus-h: none;
+  }
 }
 
-.channel-info {
-  background-color: #D9D9D9;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-  width: 100%; /* Makes it responsive */
-  max-width: 600px; /* Limits its size on large screens */
+.navbar-menu {
+  button {
+    background-color: #ccc;
+    font-weight: bold;
+    text-decoration: none;
+  }
 }
+
+// h1 {
+//   font-size: 1.8rem;
+//   color: black;
+//   margin-bottom: 20px;
+// }
+
+// h2 {
+//   font-size: 1.5rem;
+//   color: #141B41;
+//   margin-bottom: 10px;
+// }
+
+// p {
+//   color: black;
+//   margin: 5px 0 20px 0;
+// }
+
+// .channel-wrapper {
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center; /* Centers the channel-info and buttons */
+//   justify-content: center;
+//   text-align: center;
+//   margin: 20px auto;
+//   max-width: 800px; /* Limits the width of the entire content */
+// }
+
+// .channel-info {
+//   background-color: #D9D9D9;
+//   padding: 20px;
+//   border-radius: 10px;
+//   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+//   width: 100%; /* Makes it responsive */
+//   max-width: 600px; /* Limits its size on large screens */
+// }
   
-nav {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1rem;
-}
+// nav {
+//   display: flex;
+//   gap: 1rem;
+//   margin-bottom: 1rem;
+// }
 
-button {
-  border: none;
-  cursor: pointer;
-  background-color: #007bff;
-  color: white;
-  border-radius: 10px;
-  width: 50%;
+// button {
+//   border: none;
+//   cursor: pointer;
+//   background-color: #007bff;
+//   color: white;
+//   border-radius: 10px;
+//   width: 50%;
 
-  &:hover {
-    background-color: #0056b3;
-  }
-}
+//   &:hover {
+//     background-color: #0056b3;
+//   }
+// }
 
-.quit-button {
-  background: $background-attention;
-  padding: 0.5em;
-  width: 150px;
+// .quit-button {
+//   background: $background-attention;
+//   padding: 0.5em;
+//   width: 150px;
   
-  font-size: 30px;
+//   font-size: 30px;
   
-  &:hover {
-    background-color: #b90019;
-  }
-}
+//   &:hover {
+//     background-color: #b90019;
+//   }
+// }
 
-.button-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  margin-top: 20px; /* Adds spacing between channel-info and buttons */
-  width: 100%;
-  max-width: 300px; /* Prevents buttons from becoming too wide */
-}
+// .button-container {
+//   display: flex;
+//   flex-direction: column;
+//   align-items: center;
+//   gap: 10px;
+//   margin-top: 20px; /* Adds spacing between channel-info and buttons */
+//   width: 100%;
+//   max-width: 300px; /* Prevents buttons from becoming too wide */
+// }
 
-.delete-button,
-.edit-button {
-  width: 100%;
-  max-width: 200px;
-  padding: 10px;
-  font-size: 16px;
-  border-radius: 10px;
-  border: none;
-  cursor: pointer;
-  text-align: center;
-}
+// .delete-button,
+// .edit-button {
+//   width: 100%;
+//   max-width: 200px;
+//   padding: 10px;
+//   font-size: 16px;
+//   border-radius: 10px;
+//   border: none;
+//   cursor: pointer;
+//   text-align: center;
+// }
 
-.delete-button {
-  background-color: #f30000;
+// .delete-button {
+//   background-color: #f30000;
 
-  &:hover {
-    background-color: #cc0000;
-  }
-}
+//   &:hover {
+//     background-color: #cc0000;
+//   }
+// }
 
-.edit-button {
-  background-color: #007bff;
+// .edit-button {
+//   background-color: #007bff;
 
-  &:hover {
-    background-color: #0056b3;
-  }
-}
+//   &:hover {
+//     background-color: #0056b3;
+//   }
+// }
 
-@media (min-width: 768px) {
-  .button-container {
-    flex-direction: row;
-    justify-content: center;
-    gap: 20px; /* Adds more spacing for larger screens */
-  }
-}
+// @media (min-width: 768px) {
+//   .button-container {
+//     flex-direction: row;
+//     justify-content: center;
+//     gap: 20px; /* Adds more spacing for larger screens */
+//   }
+// }
 
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
+// .modal-overlay {
+//   position: fixed;
+//   top: 0;
+//   left: 0;
+//   width: 100%;
+//   height: 100%;
+//   background-color: rgba(0, 0, 0, 0.5);
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// }
 
-.modal {
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-  width: 300px;
+// .modal {
+//   background-color: #fff;
+//   padding: 20px;
+//   border-radius: 10px;
+//   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+//   width: 300px;
 
-  h2 {
-    margin-top: 0;
-  }
-}
+//   h2 {
+//     margin-top: 0;
+//   }
+// }
 
-.modal button {
-  margin-top: 20px;
-  margin-right: 10px;
-}
+// .modal button {
+//   margin-top: 20px;
+//   margin-right: 10px;
+// }
 </style>
