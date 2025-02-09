@@ -3,115 +3,239 @@
 
 @import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@100..900&display=swap');
 
-html {
-  background: linear-gradient(
-      to bottom right,
-      #0c0e1d,
-      #141B41
-    ) no-repeat center center fixed !important;
+/* color palette from <https://github.com/vuejs/theme> */
+:root {
+  --vt-c-white: #ffffff;
+  --vt-c-white-soft: #f8f8f8;
+  --vt-c-white-mute: #f2f2f2;
 
-  font-family: Avenir, Helvetica, Arial, sans-serif;
+  --vt-c-black: #181818;
+  --vt-c-black-soft: #222222;
+  --vt-c-black-mute: #282828;
+
+  --vt-c-indigo: #2c3e50;
+
+  --vt-c-divider-light-1: rgba(60, 60, 60, 0.29);
+  --vt-c-divider-light-2: rgba(60, 60, 60, 0.12);
+  --vt-c-divider-dark-1: rgba(84, 84, 84, 0.65);
+  --vt-c-divider-dark-2: rgba(84, 84, 84, 0.48);
+
+  --vt-c-text-light-1: var(--vt-c-indigo);
+  --vt-c-text-light-2: rgba(60, 60, 60, 0.66);
+  --vt-c-text-dark-1: var(--vt-c-white);
+  --vt-c-text-dark-2: rgba(235, 235, 235, 0.64);
+}
+
+/* semantic color variables for this project */
+:root {
+  --color-background: var(--vt-c-white);
+  --color-background-soft: var(--vt-c-white-soft);
+  --color-background-mute: var(--vt-c-white-mute);
+
+  --color-border: var(--vt-c-divider-light-2);
+  --color-border-hover: var(--vt-c-divider-light-1);
+
+  --color-heading: var(--vt-c-text-light-1);
+  --color-text: var(--vt-c-text-light-1);
+
+  --section-gap: 160px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-background: var(--vt-c-black);
+    --color-background-soft: var(--vt-c-black-soft);
+    --color-background-mute: var(--vt-c-black-mute);
+
+    --color-border: var(--vt-c-divider-dark-2);
+    --color-border-hover: var(--vt-c-divider-dark-1);
+
+    --color-heading: var(--vt-c-text-dark-1);
+    --color-text: var(--vt-c-text-dark-2);
+  }
+}
+
+body {
+  min-height: 100vh;
+  color: var(--color-text);
+  background: var(--color-background);
+  transition:
+    color 0.5s,
+    background-color 0.5s;
+  line-height: 1.6;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
+  font-size: 15px;
+  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: $text-primary;
-  padding-bottom: 100px;
 }
 
-.container {
-  font-family: "League Spartan", sans-serif;
-
-  margin-top: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.card{
-  background-color: #D9D9D9;
-  padding: 20px;
-  border-radius: 10px;
-  text-align: center;
-  width: 350px;
-  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-}
-
-input {
-  display: block;
-  margin-bottom: 20px;
-  height: 25px;
-  width: 90%;
-  border-radius: 20px;
-  border: 2px solid $border-default;
-  padding: 10px;
-  font-size: 1rem;
-
-  align-self: center;
-  background-color: #D9D9D9;
-  margin-top: 10px;
-}
-
-input:focus {
-  outline: none;
-  border-color: #555;
-}
-
-input::placeholder {
-  font-size: 1rem;
-  color: $text-secondary;
-}
-
-textarea {
-  display: block;
+.session {
   width: auto;
-  min-width: 90%;
-  max-width: 90%;
-  margin-left: auto;
-  margin-right: auto;
-  margin-bottom: 25px;
-  border-radius: 8px;
-  padding: 10px;
-  font-size: 1rem;
-  border: 1px solid $border-default;
-  background-color: $background-secondary;
-
-  align-self: center;
-  background-color: #D9D9D9;
+  min-width: 350px;
+  max-width: 850px;
+  display: flex;
+  flex-direction: row;
+  margin: auto auto;
 }
 
-textarea::placeholder {
-  font-size: 1rem;
-  color: $text-secondary;
+.modal {
+  z-index: 1500;
 }
 
-label {
-  font-size: 18px;
-  color: black;
-  margin-left: 5px;
+/* Slide transition classes */
+.slide-enter-active, .slide-leave-active {
+  transition: transform 0.5s ease, opacity 0.5s ease;
+}
+/* Entering: start from the right */
+.slide-enter-from {
+  transform: translateX(100%);
+  opacity: 0;
+}
+/* Leaving: slide to the left */
+.slide-leave-to {
+  transform: translateX(-100%);
+  opacity: 0;
+}
+/* Make sure the entering element ends at the proper position */
+.slide-enter-to, .slide-leave-from {
+  transform: translateX(0);
+  opacity: 1;
 }
 
-button {
-  font-family: "League Spartan", sans-serif;
-  font-size: 1rem;
-
-  background-color: #00ff00;
-  border: #919191 solid 2px;
-  padding: 10px 20px;
-  width: 30%;
-  border-radius: 20px;
-  color: white;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background-color 0.3s;
-
-  text-align: center;
-  align-self: center;
-
-  margin-bottom: 5px;
-
-  box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.2);
+/* Fade transition classes */
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.3s ease;
+}
+.fade-enter-from, .fade-leave-to {
+  opacity: 0;
+}
+.fade-enter-to, .fade-leave-from {
+  opacity: 1;
 }
 
-button:hover {
-  background-color: #00cc00;
-}
+
+// html {
+//   background: linear-gradient(
+//       to bottom right,
+//       #0c0e1d,
+//       #141B41
+//     ) no-repeat center center fixed !important;
+
+//   font-family: Avenir, Helvetica, Arial, sans-serif;
+//   -webkit-font-smoothing: antialiased;
+//   -moz-osx-font-smoothing: grayscale;
+//   text-align: center;
+//   color: $text-primary;
+//   padding-bottom: 100px;
+// }
+
+// .container {
+//   font-family: "League Spartan", sans-serif;
+
+//   //margin-top: 10px;
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+// }
+
+// .card{
+//   background-color: #D9D9D9;
+//   padding: 20px;
+//   border-radius: 10px;
+//   text-align: center;
+//   width: 350px;
+//   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+// }
+
+// input {
+//   display: block;
+//   margin-bottom: 20px;
+//   height: 25px;
+//   width: 90%;
+//   border-radius: 20px;
+//   border: 2px solid $border-default;
+//   padding: 10px;
+//   font-size: 1rem;
+
+//   align-self: center;
+//   background-color: #D9D9D9;
+//   margin-top: 10px;
+// }
+
+// input:focus {
+//   outline: none;
+//   border-color: #555;
+// }
+
+// input::placeholder {
+//   font-size: 1rem;
+//   color: $text-secondary;
+// }
+
+// textarea {
+//   display: block;
+//   width: auto;
+//   min-width: 90%;
+//   max-width: 90%;
+//   margin-left: auto;
+//   margin-right: auto;
+//   margin-bottom: 25px;
+//   border-radius: 8px;
+//   padding: 10px;
+//   font-size: 1rem;
+//   border: 1px solid $border-default;
+//   background-color: $background-secondary;
+
+//   align-self: center;
+//   background-color: #D9D9D9;
+// }
+
+// textarea::placeholder {
+//   font-size: 1rem;
+//   color: $text-secondary;
+// }
+
+// label {
+//   font-size: 18px;
+//   color: black;
+//   margin-left: 5px;
+// }
+
+// button {
+//   font-family: "League Spartan", sans-serif;
+//   font-size: 1rem;
+
+//   background-color: #00ff00;
+//   border: #919191 solid 2px;
+//   padding: 10px 20px;
+//   width: 30%;
+//   border-radius: 20px;
+//   color: white;
+//   font-weight: bold;
+//   cursor: pointer;
+//   transition: background-color 0.3s;
+
+//   text-align: center;
+//   align-self: center;
+
+//   margin-bottom: 5px;
+
+//   box-shadow: 2px 3px 5px rgba(0, 0, 0, 0.2);
+// }
+
+// button:hover {
+//   background-color: #00cc00;
+// }

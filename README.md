@@ -1,1 +1,1 @@
-Este site foi feito para professores que querem compartilhar conteúdo com seus alunos
+This website was made by professors that wanted to share content if his students

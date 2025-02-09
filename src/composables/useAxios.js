@@ -1,7 +1,9 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:5000",
+  baseURL: import.meta.env.PROD
+    ? "https://haja-backend.vercel.app" // URL da API em produção
+    : "http://localhost:5000", // URL da API em desenvolvimento
   timeout: 10000,
   headers: {
     "Content-Type": "application/json",

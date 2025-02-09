@@ -1,8 +1,11 @@
 <template>
     <div class="channel-card">
-        <p class = "text"> {{ channelName }}</p>
-        <p class="author">
+        <p class="text"> {{ channelName }}</p>
+        <p class="id">
             <span><b>{{ channelId }}</b></span>
+        </p>
+        <p class="author">
+            <span><b>By: {{ authorUsername }}</b></span>
         </p>
         <p class="time">{{ formattedDate }}</p>
     </div>
@@ -16,11 +19,11 @@ const props = defineProps({
         type: String,
         required: true
     },
-    authorId: {
+    channelId: {
         type: String,
         required: true
     },
-    channelId: {
+    authorUsername: {
         type: String,
         required: true
     },
@@ -43,31 +46,39 @@ const formattedDate = computed(() => {
 <style lang="scss" scoped>
 .channel-card {
     border: 1px solid $border-default;
-    background-color: #ececec;
+    background-color: #272727;
     width: 90%;
     border-radius: 8px;
     margin-left: auto;
     margin-right: auto;
     margin-top: 24px;
-    padding: 12px;
+    padding: 30px;
     text-align: center;
     transition: all 0.2s ease-in-out;
 
     .text {
-        color: $text-card;
+        font-size: 1.5em;
+        color: #dadada;
+    }
+
+    .id {
+        font-size: 1em;
+        color: #a7a7a7;
     }
 
     .author {
-        color: $text-muted;
+        font-size: 1em;
+        color: #a7a7a7;
     }
 
     .time {
-        color: $text-muted;
+        font-size: 1em;
+        color: #a7a7a7;
     }
 }
 
 .channel-card:hover {
-    background-color: $background-secondary;
+    background-color: #363636;
     cursor: pointer;
     transform: scale(1.05);
 }
