@@ -2,26 +2,26 @@
   <div>
     <div class="container">
       <div class="card">
-        <h1>Create Channel</h1>
+        <h1 class="title is-2">Create Channel</h1>
         <form @submit.prevent="createChannel">
-          <input type="text" placeholder="Name" v-model="name"/>
-          <input type="password" placeholder="Password" v-model="password"/>
+          <input class="input" type="text" placeholder="Name" v-model="name"/>
+          <input class="input" type="password" placeholder="Password" v-model="password"/>
       
-          <button type="submit">Create</button>
+          <button class="button is-primary is-fullwidth is-rounded" type="submit" ref="button_create_channel">Create</button>
         </form>
       </div>
     </div>
 
     <div class="container" style="margin-top: 10px;">
       <div class="card">
-        <h1>Create Video</h1>
+        <h1 class="title is-2">Create Video</h1>
         <form @submit.prevent="createVideo">
-          <input type="text" placeholder="Channel Id" v-model="channelId"/>
-          <input type="text" placeholder="Title" v-model="title"/>
-          <textarea rows="15" placeholder="Description" v-model="description"></textarea>
-          <input type="text" placeholder="URL" v-model="url"/>
+          <input class="input" type="text" placeholder="Channel Id" v-model="channelId"/>
+          <input class="input" type="text" placeholder="Title" v-model="title"/>
+          <textarea class="textarea" rows="10" placeholder="Description" v-model="description"></textarea>
+          <input class="input" type="text" placeholder="URL" v-model="url"/>
     
-          <button type="submit">Create</button>
+          <button class="button is-primary is-fullwidth is-rounded" type="submit" ref="button_create_video">Create</button>
         </form>
       </div>
     </div>
@@ -46,7 +46,11 @@
   const name = ref("");
   const password = ref("");
 
+  const button_create_channel = ref(null);
+  const button_create_video = ref(null);
+
   const createVideo = () => {
+    button_create_video.value.classList.add('is-loading');
     post(`/channels/${channelId.value}/videos`, { title: title.value, description: description.value, url: url.value }).then((response) => {
       console.log(response);
       title.value = "";
@@ -56,6 +60,7 @@
       $toast.success("Video created!", { position: "bottom" });
     })
     .catch((error) => {
+      button_create_video.value.classList.remove('is-loading');
       if (error.response) {
         const status = error.response.status;
 
@@ -76,10 +81,15 @@
           }
         );
       }
+    })
+    .finally(() => {
+     button_create_video.value.classList.remove('is-loading');
     });
   };
 
   const createChannel = () => {
+    button_create_channel.value.classList.add('is-loading');
+
     post("/channels/", { name: name.value, password: password.value }).then((response) => {
       console.log(response);
 
@@ -95,6 +105,7 @@
 
     })
     .catch((error) => {
+      button_create_channel.value.classList.remove('is-loading');
       if (error.response) {
         const status = error.response.status;
 
@@ -111,15 +122,22 @@
           }
         );
       }
+    })
+    .finally(() => {
+      button_create_channel.value.classList.remove('is-loading');
     });
   };
 </script>
 
 
 <style lang="scss" scoped>
-  h1 {
-    font-size: 1.8rem;
-    color: black;
-    margin-bottom: 20px;
+  .container .input, textarea {
+    margin-bottom: 10px;
+  }
+  .container {
+    padding: 5vw 10vw 5vw 10vw;
+  }
+  .card{
+    padding: 15%;
   }
 </style>
