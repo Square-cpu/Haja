@@ -153,6 +153,7 @@ const fetchUser = () => {
 const logout = () => {
   user.value = null;
   localStorage.removeItem("authToken");
+  localStorage.removeItem("user");
   $toast.info("Logout successful!", { position: "bottom" });
   router.push("/login");
 };

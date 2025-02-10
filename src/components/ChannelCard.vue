@@ -2,10 +2,7 @@
     <div class="channel-card">
         <p class="text"> {{ channelName }}</p>
         <p class="id">
-            <span><b>{{ channelId }}</b></span>
-        </p>
-        <p class="author">
-            <span><b>By: {{ authorUsername }}</b></span>
+            <span><b>Id: {{ channelId }}</b></span>
         </p>
         <p class="time">{{ formattedDate }}</p>
     </div>
@@ -20,12 +17,11 @@ const props = defineProps({
         required: true
     },
     channelId: {
-        type: String,
+        type: Number,
         required: true
     },
-    authorUsername: {
+    creatorUsername: {
         type: String,
-        required: true
     },
     created: {
         type: String,

@@ -1,6 +1,7 @@
 <template>
-    <div class="card">
+    <div class="box session block" style="box-shadow: none; outline: auto;">
         <iframe
+            class="block"
             width="320"
             height="240"
             :src="computedVideoLink"
@@ -9,10 +10,10 @@
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
             allowfullscreen
         ></iframe>
+        <p class="title">{{ title }}</p>
         <p class="author">
             <span><b>{{ author.username }}</b></span>
         </p>
-        <p class="title">{{ title }}</p>
         <p class="description">{{ description }}</p>
     </div>
 </template>
@@ -74,22 +75,25 @@ const formattedDate = computed(() => {
 }
 
 .title {
-    color: black;
-    margin: 5px 0 20px 0;
+    color: #cccccc;
     font-size: 20px;
+    text-align: center;
 }
 
 .description {
-    color: rgb(20, 20, 20);
-    margin: 5px 0 20px 0;
+    color: #b4b4b4;
     font-size: 15px;
+    text-align: justify;
 }
 
 .time {
-    color: $text-muted;
+    color: #afafaf;
+    text-align: center;
 }
 
 .author {
-    color: black;
+    color: #cccccc;
+    text-align: center;
+    font-size: 16px;
 }
 </style>

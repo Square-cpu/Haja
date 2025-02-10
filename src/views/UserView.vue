@@ -7,7 +7,7 @@
       
         <form @submit.prevent="search" class="field is-centered">
 
-          <div class="field">
+          <div class="field search-form">
             <div class="control has-icons-left">
               <input type="text" id="name" v-model="name" class="input" placeholder="Channel Name"/>
               <span class="icon is-left is-small">
@@ -44,20 +44,18 @@
         <div v-else>
 
           <nav class="navbar">
-            <div class="navbar-menu">
-              <div class="navbar-start">
-                <div class="field is-grouped is-grouped-centered">
-                  <p class="control">
-                    <button @click="activeTab = 'own'" :style="{ backgroundColor: activeTab === 'own' ? '#f2f2f2' : 'gray' }" style="width: 220px;" class="button is-rounded is-white">Your Channels</button>
-                  </p>
-                </div>
+            <div class="navbar-start" style="margin-bottom: 10px;">
+              <div class="field is-grouped is-grouped-centered">
+                <p class="control">
+                  <button @click="activeTab = 'own'" :style="{ backgroundColor: activeTab === 'own' ? '#f2f2f2' : 'gray' }" style="width: 220px;" class="button is-rounded is-white">Your Channels</button>
+                </p>
               </div>
-              <div class="navbar-end">
-                <div class="field is-grouped is-grouped-centered">
-                  <p class="control">
-                    <button @click="activeTab = 'subscribed'" :style="{ backgroundColor: activeTab === 'subscribed' ? '#f2f2f2' : 'gray' }" style="width: 220px;" class="button is-rounded is-white">Subscribed Channels</button>
-                  </p>
-                </div>
+            </div>
+            <div class="navbar-end" style="margin-bottom: 10px;">
+              <div class="field is-grouped is-grouped-centered">
+                <p class="control">
+                  <button @click="activeTab = 'subscribed'" :style="{ backgroundColor: activeTab === 'subscribed' ? '#f2f2f2' : 'gray' }" style="width: 220px;" class="button is-rounded is-white">Subscribed Channels</button>
+                </p>
               </div>
             </div>
           </nav>
@@ -69,7 +67,6 @@
                 v-for="channel in user.created_channels"
                 :key="channel.id"
                 :channelName="channel.name"
-                :authorUsername="channel.creator_username"
                 :channelId="channel.id"
                 :created="channel.created_at"
                 @click="fetchChannel(channel.id)"
@@ -86,7 +83,6 @@
               v-for="channel in filteredSubscribedChannels"
               :key="channel.id"
               :channelName="channel.name"
-              :authorUsername="channel.creator_username"
               :channelId="channel.id"
               :created="channel.created_at"
               @click="fetchChannel(channel.id)"
@@ -104,43 +100,109 @@
     <div class="container">
       <div class="box session channel-card">
         <h1 class="title is-1" style="text-align: center;">Channel</h1>
-        <p style="font-size: 20px;"><b>ID:</b> {{ channel.id }}</p>
-        <p style="font-size: 20px;"><b>Name:</b> {{ channel.name }}</p>
-        <p style="font-size: 20px;"><b>Created at:</b> {{ created_at_formatted }}</p>
-        <p style="font-size: 20px;"><b>Creator:</b> {{ channel.creator_username }}</p>
+        <div class="box" style="background-color: #d9d9d9;">
+          <p><b>ID:</b> {{ channel.id }}</p>
+          <p><b>Name:</b> {{ channel.name }}</p>
+          <p><b>Created at:</b> {{ created_at_formatted }}</p>
+          <p><b>Creator:</b> {{ channel.creator_username }}</p>
+        </div>
       </div>
 
-      <div v-if="user.id === channel.creator_id" class="button-container">
-        <button class="delete-button" @click="showDeleteModal = true">Delete Channel</button>
-        <button class="edit-button" @click="manageVideos">Manage Videos</button>
+      <div v-if="user.id === channel.creator_id" class="container">
+        <div class="navbar is-centered" style="margin-top: 30px;">
+          <div class="navbar-end" style="margin-bottom: 10px;">
+            <div class="field is-grouped is-grouped-centered">
+              <p class="control">
+                <button @click="showDeleteModal = true" style="width: 220px;" class="button is-rounded is-danger">Delete Channel</button>
+              </p>
+            </div>
+          </div>
+          <div class="navbar-end" style="margin-bottom: 10px;">
+            <div class="field is-grouped is-grouped-centered">
+              <p class="control">
+                <button @click="manageVideos" style="width: 220px;" class="button is-rounded is-info">Manage Videos</button>
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
 
     <!-- Delete Modal -->
-    <div v-if="showDeleteModal" class="modal-overlay" @click.self="showDeleteModal = false">
-      <div class="modal" @click.stop>
-        <h2>Delete Channel</h2>
-        <p>
+    <teleport to="body">
+    <transition name="fade">
+    <div v-if="showDeleteModal" class="modal" :class="{ 'is-active': showDeleteModal }">
+      <div class="modal-background" @click="showDeleteModal = false"></div>
+      <div class="modal-content box session">
+
+        <h1 class="title is-3" style="text-align: center;">Delete Channel</h1>
+        <p class="subtitle is-6" style="margin-top: 20px; text-align: justify;">
           Are you sure you want to <b>delete</b> this channel? 
           You will lose all videos and subscribers. This action <b>cannot</b> be undone.
         </p>
-        <button class="delete-button" @click="showConfirmModal = true; showDeleteModal = false">Yes, delete</button>
-        <button @click="showDeleteModal = false">Cancel</button>
+
+        <div class="field is-grouped is-grouped-centered">
+          <p class="control">
+            <button class="button is-rounded is-danger" @click="showConfirmModal = true; showDeleteModal = false">Yes, delete</button>
+          </p>
+        </div>
+
+        <div class="field is-grouped is-grouped-centered">
+          <p class="control">
+            <button class="button is-rounded is-info" @click="showDeleteModal = false">Cancel</button>
+          </p>
+        </div>
+
       </div>
+      <button class="modal-close is-large" aria-label="close" @click="showDeleteModal = false"></button>
     </div>
+    </transition>
+    </teleport>
 
     <!-- Confirm Modal -->
-    <div v-if="showConfirmModal" class="modal-overlay" @click.self="showConfirmModal = false; confirmText = ''">
-      <div class="modal" @click.stop>
-        <h2>Confirm Deletion</h2>
-        <p>Please type "DELETE CHANNEL" to confirm:</p>
-        <input type="text" v-model="confirmText" />
-        <button class="delete-button" @click="deleteChannel" :disabled="confirmText !== 'DELETE CHANNEL'">Delete Channel</button>
-        <button @click="showConfirmModal = false; confirmText = ''">Cancel</button>
+    <teleport to="body">
+    <transition name="fade">
+    <div v-if="showConfirmModal" class="modal" :class="{ 'is-active': showConfirmModal }">
+      <div class="modal-background" @click="showConfirmModal = false"></div>
+      <div class="modal-content box session">
+
+        <h1 class="title is-3" style="text-align: center;">Confirm Deletion</h1>
+
+        <p class="subtitle is-6" style="margin-top: 20px; text-align: justify;">
+          Please type "DELETE CHANNEL" to confirm:
+        </p>
+
+        <div class="field">
+          <input class="input" type="text" v-model="confirmText1" />
+        </div>
+
+        <p class="subtitle is-6" style="margin-top: 20px; text-align: justify;">
+          Please type the channels name to confirm:
+        </p>
+
+        <div class="field">
+          <input class="input" type="text" v-model="confirmText2" />
+        </div>
+
+        <div class="field is-grouped is-grouped-centered">
+          <p class="control">
+            <button class="button is-rounded is-danger" @click="deleteChannel" :disabled="confirmText1 !== 'DELETE CHANNEL' || confirmText2 !== channel.name">Delete</button>
+          </p>
+        </div>
+
+        <div class="field is-grouped is-grouped-centered">
+          <p class="control">
+            <button class="button is-rounded is-info" @click="showConfirmModal = false">Cancel</button>
+          </p>
+        </div>
+
       </div>
+      <button class="modal-close is-large" aria-label="close" @click="showConfirmModal = false"></button>
     </div>
+    </transition>
+    </teleport>
     
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr);">
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); margin-top: 20px;">
         <VideoCard 
           v-for="video in videos"
           :key="video.id"
@@ -152,8 +214,11 @@
           :description="video.description"
         />
     </div>
-    <div style="margin-top: 24px;">
-      <button class="button is-danger" @click="quit">Return</button>
+
+    <div class="field is-grouped is-grouped-centered" style="margin-top: 24px;">
+      <p class="control">
+        <button class="button is-danger" @click="quit" style="padding: 20px 25px; font-size: 20px;">Return</button>
+      </p>
     </div>
   </div>
 </template>
@@ -165,7 +230,6 @@
   import { useAxios } from "@/composables/useAxios";
   import { useToast } from "vue-toast-notification";
   import { DateTime } from "luxon";
-
   
   const { post, get, del } = useAxios();
   
@@ -181,12 +245,16 @@
   
   const showDeleteModal = ref(false);
   const showConfirmModal = ref(false);
-  const confirmText = ref('');
+  const confirmText1 = ref('');
+  const confirmText2 = ref('');
 
   const deleteChannel = () => {
     del(`/channels/${channel.value.id}`)
       .then((response) => {
         $toast.success("Successfully deleted the channel!", { position: "bottom" });
+        get("/users/me").then((response) => {
+          user.value = response.data;
+        })
       })
       .catch((error) => {
         if (error.response) {
@@ -198,7 +266,8 @@
 
     showConfirmModal.value = false;
     showDeleteModal.value = false;
-    confirmText.value = '';
+    confirmText1.value = '';
+    confirmText2.value = '';
 
     channel.value = null;
   }
@@ -266,7 +335,7 @@
   onMounted(async () => {
     try {
       const response = await get("/users/me"); // Adjust the endpoint as needed
-      console.log("User data received:", response.data); // Log the data
+      //console.log("User data received:", response.data); // Log the data
       user.value = response.data; // Set the user if authenticated
     } catch (error) {
       $toast.warning("Please login", { position: "bottom" });
@@ -282,7 +351,9 @@
   display: flex;
   flex-direction: column;
   margin: auto auto;
+}
 
+.search-form {
   .input {
     margin-bottom: 10px;
     border: none;
@@ -295,6 +366,13 @@
   }
 }
 
+.channel-card {
+  p {
+    font-size: 20px;
+    color: #0e0e0e
+  }
+}
+
 .navbar-menu {
   button {
     background-color: #ccc;
@@ -303,145 +381,12 @@
   }
 }
 
-// h1 {
-//   font-size: 1.8rem;
-//   color: black;
-//   margin-bottom: 20px;
-// }
-
-// h2 {
-//   font-size: 1.5rem;
-//   color: #141B41;
-//   margin-bottom: 10px;
-// }
-
-// p {
-//   color: black;
-//   margin: 5px 0 20px 0;
-// }
-
-// .channel-wrapper {
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center; /* Centers the channel-info and buttons */
-//   justify-content: center;
-//   text-align: center;
-//   margin: 20px auto;
-//   max-width: 800px; /* Limits the width of the entire content */
-// }
-
-// .channel-info {
-//   background-color: #D9D9D9;
-//   padding: 20px;
-//   border-radius: 10px;
-//   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-//   width: 100%; /* Makes it responsive */
-//   max-width: 600px; /* Limits its size on large screens */
-// }
-  
-// nav {
-//   display: flex;
-//   gap: 1rem;
-//   margin-bottom: 1rem;
-// }
-
-// button {
-//   border: none;
-//   cursor: pointer;
-//   background-color: #007bff;
-//   color: white;
-//   border-radius: 10px;
-//   width: 50%;
-
-//   &:hover {
-//     background-color: #0056b3;
-//   }
-// }
-
-// .quit-button {
-//   background: $background-attention;
-//   padding: 0.5em;
-//   width: 150px;
-  
-//   font-size: 30px;
-  
-//   &:hover {
-//     background-color: #b90019;
-//   }
-// }
-
-// .button-container {
-//   display: flex;
-//   flex-direction: column;
-//   align-items: center;
-//   gap: 10px;
-//   margin-top: 20px; /* Adds spacing between channel-info and buttons */
-//   width: 100%;
-//   max-width: 300px; /* Prevents buttons from becoming too wide */
-// }
-
-// .delete-button,
-// .edit-button {
-//   width: 100%;
-//   max-width: 200px;
-//   padding: 10px;
-//   font-size: 16px;
-//   border-radius: 10px;
-//   border: none;
-//   cursor: pointer;
-//   text-align: center;
-// }
-
-// .delete-button {
-//   background-color: #f30000;
-
-//   &:hover {
-//     background-color: #cc0000;
-//   }
-// }
-
-// .edit-button {
-//   background-color: #007bff;
-
-//   &:hover {
-//     background-color: #0056b3;
-//   }
-// }
-
-// @media (min-width: 768px) {
-//   .button-container {
-//     flex-direction: row;
-//     justify-content: center;
-//     gap: 20px; /* Adds more spacing for larger screens */
-//   }
-// }
-
-// .modal-overlay {
-//   position: fixed;
-//   top: 0;
-//   left: 0;
-//   width: 100%;
-//   height: 100%;
-//   background-color: rgba(0, 0, 0, 0.5);
-//   display: flex;
-//   justify-content: center;
-//   align-items: center;
-// }
-
-// .modal {
-//   background-color: #fff;
-//   padding: 20px;
-//   border-radius: 10px;
-//   box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-//   width: 300px;
-
-//   h2 {
-//     margin-top: 0;
-//   }
-// }
-
-// .modal button {
-//   margin-top: 20px;
-//   margin-right: 10px;
-// }
+.navbar {
+  width: auto;
+  max-width: 500px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
 </style>

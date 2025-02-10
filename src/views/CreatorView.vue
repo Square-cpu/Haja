@@ -1,31 +1,62 @@
 <template>
+  
   <div>
-    <div class="container">
+    <div v-if="!channelCreatorCard && !videoCreatorCard">
+      <div class="container session" style="flex-direction: row; gap: 50px;">
+        <div class="box session" @click="channelCreatorCard = true; videoCreatorCard = false">
+          <span class="icon is-left is-small block">
+            <i class="material-icons" style="font-size: 100px;">groups</i>
+          </span>
+          <h1 class="title is-1 block" style="color: #e8e8e8; text-align: center;">Create Channels</h1>
+            
+        </div>
+        <div class="box session" @click="channelCreatorCard = false; videoCreatorCard = true">
+          <span class="icon is-left is-small block">
+            <i class="material-icons" style="font-size: 100px;">smart_display</i>
+          </span>
+          <h1 class="title is-1 block" style="color: #e8e8e8; text-align: center;">Create Videos</h1>
+        </div>
+      </div>
+    </div>
+
+    <div v-else-if="channelCreatorCard" class="container">
       <div class="card">
         <h1 class="title is-2">Create Channel</h1>
         <form @submit.prevent="createChannel">
-          <input class="input" type="text" placeholder="Name" v-model="name"/>
-          <input class="input" type="password" placeholder="Password" v-model="password"/>
+          <input class="input" type="text" placeholder="Name" v-model="name" required/>
+          <input class="input" type="password" placeholder="Password" v-model="password" required/>
       
           <button class="button is-primary is-fullwidth is-rounded" type="submit" ref="button_create_channel">Create</button>
+          <div class="field is-grouped is-grouped-centered" style="margin-top: 24px;">
+            <p class="control">
+              <button class="button is-danger" @click="channelCreatorCard = false" style="font-size: 20px;">Return</button>
+            </p>
+          </div>
         </form>
       </div>
     </div>
 
-    <div class="container" style="margin-top: 10px;">
+    <div v-else-if="videoCreatorCard" class="container" style="margin-top: 10px;">
       <div class="card">
         <h1 class="title is-2">Create Video</h1>
         <form @submit.prevent="createVideo">
-          <input class="input" type="text" placeholder="Channel Id" v-model="channelId"/>
-          <input class="input" type="text" placeholder="Title" v-model="title"/>
+          <input class="input" type="text" placeholder="Channel Id" v-model="channelId" required/>
+          <input class="input" type="text" placeholder="Title" v-model="title" required/>
           <textarea class="textarea" rows="10" placeholder="Description" v-model="description"></textarea>
-          <input class="input" type="text" placeholder="URL" v-model="url"/>
+          <input class="input" type="text" placeholder="URL" v-model="url" required/>
     
           <button class="button is-primary is-fullwidth is-rounded" type="submit" ref="button_create_video">Create</button>
+
+          <div class="field is-grouped is-grouped-centered" style="margin-top: 24px;">
+            <p class="control">
+              <button class="button is-danger" @click="videoCreatorCard = false" style="font-size: 20px;">Return</button>
+            </p>
+          </div>
         </form>
       </div>
     </div>
   </div>
+
 </template>
   
 
@@ -48,6 +79,9 @@
 
   const button_create_channel = ref(null);
   const button_create_video = ref(null);
+
+  const channelCreatorCard = ref(false);
+  const videoCreatorCard = ref(false);
 
   const createVideo = () => {
     button_create_video.value.classList.add('is-loading');
@@ -131,6 +165,26 @@
 
 
 <style lang="scss" scoped>
+  .session {
+    padding: 40px 30px;
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 300px;
+    gap: 20px;
+  }
+
+  .box {
+    cursor: pointer;
+
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+      transform: scale(1.05);
+    }
+  }
+
   .container .input, textarea {
     margin-bottom: 10px;
   }

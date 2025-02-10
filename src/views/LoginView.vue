@@ -290,12 +290,6 @@
     });
   };
 
-  const logout = () => {
-    user.value = null;
-    localStorage.removeItem("authToken");
-    $toast.info("Logout successful!", { position: "bottom" });
-  };
-
   const sendResetEmail = () => {
     reset_button.value.classList.add('is-loading');
 
@@ -330,14 +324,6 @@
       resend_button.value.classList.remove('is-loading');
     });
   }
-
-  const created_at_formatted = computed(() => {
-    return DateTime.fromISO(user.value.created_at).toFormat("dd/MM/yyyy HH:mm");
-  });
-
-  const birthdate_formatted = computed(() => {
-    return DateTime.fromISO(user.value.birthdate).toFormat("dd/MM/yyyy");
-  });
 
   onMounted(() => {
     if (localStorage.getItem("authToken")) {
